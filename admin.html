@@ -11,6 +11,10 @@
     --border: #1e2e1e; --text: #e8f5e9; --muted: #5a7a5a;
     --red: #ff5252; --yellow: #ffd500;
   }
+  .rotate-msg { display: none; position: fixed; inset: 0; background: var(--dark); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; font-family: "Barlow", sans-serif; color: var(--muted); text-align: center; padding: 40px; }
+  .rotate-msg .icon { font-size: 60px; margin-bottom: 16px; }
+  .rotate-msg p { font-size: 16px; letter-spacing: 1px; }
+  @media (orientation: landscape) { .rotate-msg { display: flex; } body > *:not(.rotate-msg) { display: none !important; } }
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body { background: var(--dark); color: var(--text); font-family: 'Barlow', sans-serif; min-height: 100vh; padding-bottom: 60px; }
 
@@ -131,6 +135,7 @@
 </style>
 </head>
 <body>
+<div class="rotate-msg"><div class="icon">📱</div><p>Gira tu celular a<br>modo vertical</p></div>
 
 <div id="login-screen">
   <div class="admin-logo">ADMIN</div>
