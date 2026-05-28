@@ -9,6 +9,7 @@
   :root {
     --green: #00c853; --dark: #0a0f0a; --card: #111a11;
     --border: #1e2e1e; --text: #e8f5e9; --muted: #5a7a5a; --red: #ff5252;
+    --gold: #ffd500;
   }
   .rotate-msg { display: none; position: fixed; inset: 0; background: var(--dark); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; font-family: "Barlow", sans-serif; color: var(--muted); text-align: center; padding: 40px; }
   .rotate-msg .icon { font-size: 60px; margin-bottom: 16px; }
@@ -19,32 +20,55 @@
 
   header {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 20px; border-bottom: 1px solid var(--border);
+    padding: 20px 20px 12px;
     position: sticky; top: 0; background: var(--dark); z-index: 10;
+    border-bottom: 1px solid var(--border);
   }
-  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 26px; color: var(--green); letter-spacing: 3px; }
-  .welcome { font-size: 13px; color: var(--muted); }
-  .welcome span { color: var(--text); font-weight: 600; }
+  .hola { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--text); letter-spacing: 2px; line-height: 1; }
+  .hola span { color: var(--green); }
   .logout { font-size: 13px; color: var(--muted); cursor: pointer; padding: 8px; }
 
   main { padding: 20px; }
   .section-title { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
 
+  /* Resultados button */
+  .resultados-btn {
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(0,200,83,0.08); border: 1px solid rgba(0,200,83,0.25);
+    border-radius: 12px; padding: 16px 20px; margin-bottom: 20px;
+    text-decoration: none; color: var(--text);
+  }
+  .resultados-btn:active { opacity: 0.8; }
+  .resultados-btn-label { font-weight: 600; font-size: 16px; }
+  .resultados-btn-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .resultados-arrow { color: var(--green); font-size: 22px; }
+
+  /* Sheet cards */
   .sheet-card {
     background: var(--card); border: 1px solid var(--border); border-radius: 12px;
     padding: 18px 20px; margin-bottom: 12px;
     display: flex; align-items: center; justify-content: space-between; gap: 12px;
     cursor: pointer; transition: border-color 0.2s;
-    -webkit-tap-highlight-color: rgba(0,200,83,0.1);
   }
-  .sheet-card:active { border-color: var(--green); }
-  .sheet-card.done { opacity: 0.6; cursor: default; }
+  .sheet-card:active { opacity: 0.85; }
+  .sheet-card.done { opacity: 0.5; cursor: default; }
+
+  /* Gold glow for new unfilled sheets */
+  .sheet-card.new-sheet {
+    border-color: var(--gold);
+    animation: goldGlow 2s ease-in-out infinite;
+  }
+  @keyframes goldGlow {
+    0%, 100% { box-shadow: 0 0 8px rgba(255,213,0,0.3), 0 0 0px rgba(255,213,0,0); border-color: rgba(255,213,0,0.6); }
+    50% { box-shadow: 0 0 20px rgba(255,213,0,0.6), 0 0 40px rgba(255,213,0,0.2); border-color: rgba(255,213,0,1); }
+  }
+
   .sheet-name { font-weight: 600; font-size: 17px; }
   .sheet-meta { font-size: 13px; color: var(--muted); margin-top: 4px; }
   .badge { font-size: 12px; padding: 6px 12px; border-radius: 20px; font-weight: 600; white-space: nowrap; }
-  .badge.open { background: rgba(0,200,83,0.15); color: var(--green); }
-  .badge.closed { background: rgba(255,82,82,0.12); color: var(--red); }
+  .badge.open { background: rgba(255,213,0,0.15); color: var(--gold); }
   .badge.done-badge { background: rgba(90,122,90,0.2); color: var(--muted); }
+  .badge.closed { background: rgba(255,82,82,0.12); color: var(--red); }
   .empty { text-align: center; color: var(--muted); padding: 50px 0; font-size: 14px; }
 
   /* Modal */
@@ -62,7 +86,7 @@
   .modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 2px; }
   .close-btn { font-size: 28px; cursor: pointer; color: var(--muted); padding: 4px 8px; }
 
-  /* Game rows - mobile optimized */
+  /* Game rows */
   .game-row {
     background: var(--dark); border: 1px solid var(--border); border-radius: 10px;
     padding: 14px 16px; margin-bottom: 10px;
@@ -80,25 +104,6 @@
   .score-input:focus { border-color: var(--green); }
   .score-dash { font-size: 22px; color: var(--muted); font-family: 'Bebas Neue', sans-serif; }
 
-  /* Results */
-  .result-card {
-    background: var(--dark); border: 1px solid var(--border);
-    border-radius: 10px; padding: 14px 16px; margin-bottom: 10px;
-  }
-  .result-teams { display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; margin-bottom: 10px; }
-  .scores-row { display: flex; align-items: center; justify-content: space-between; }
-  .score-box { font-family: 'Bebas Neue', sans-serif; font-size: 20px; padding: 6px 14px; border-radius: 8px; text-align: center; }
-  .score-box.my { background: #1a2e1a; }
-  .score-box.real { background: rgba(0,200,83,0.15); color: var(--green); }
-  .score-label { font-size: 10px; color: var(--muted); text-align: center; margin-top: 3px; letter-spacing: 1px; }
-  .pts-chip { font-size: 15px; font-weight: 700; padding: 6px 14px; border-radius: 20px; }
-  .pts-3 { background: rgba(0,200,83,0.2); color: var(--green); }
-  .pts-1 { background: rgba(255,213,0,0.15); color: #ffd500; }
-  .pts-0 { background: rgba(255,82,82,0.1); color: var(--muted); }
-  .total-box { text-align: center; padding: 20px; margin-top: 8px; }
-  .total-num { font-family: 'Bebas Neue', sans-serif; font-size: 56px; color: var(--green); line-height: 1; }
-  .total-label { font-size: 12px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
-
   .submit-btn {
     width: 100%; padding: 18px; background: var(--green); color: #000;
     border: none; border-radius: 10px; font-family: 'Bebas Neue', sans-serif;
@@ -115,14 +120,20 @@
 <div class="rotate-msg"><div class="icon">📱</div><p>Gira tu celular a<br>modo vertical</p></div>
 
 <header>
-  <div class="logo">QUINIELA</div>
-  <div class="welcome">Hola, <span id="username">—</span></div>
+  <div class="hola">HOLA <span id="username">—</span></div>
   <div class="logout" onclick="logout()">Salir</div>
 </header>
 
 <main>
+  <a href="standings.html" class="resultados-btn">
+    <div>
+      <div class="resultados-btn-label">🏆 Resultados</div>
+      <div class="resultados-btn-sub">Puntos y pronósticos de todos</div>
+    </div>
+    <span class="resultados-arrow">→</span>
+  </a>
+
   <div class="section-title">Quinielas</div>
-  <a href="standings.html" style="display:flex;align-items:center;justify-content:space-between;background:rgba(0,200,83,0.08);border:1px solid rgba(0,200,83,0.25);border-radius:12px;padding:16px 20px;margin-bottom:16px;text-decoration:none;color:var(--text)"><div><div style="font-weight:600;font-size:16px">🏆 Ver clasificación</div><div style="font-size:12px;color:var(--muted);margin-top:3px">Todos los pronósticos y puntos</div></div><span style="color:var(--green);font-size:20px">→</span></a>
   <div id="sheets-list"><div class="empty">Cargando...</div></div>
 </main>
 
@@ -142,7 +153,7 @@
   const token = localStorage.getItem('q_token');
   const name = localStorage.getItem('q_name');
   if (!token) window.location.href = 'index.html';
-  document.getElementById('username').textContent = name || '—';
+  document.getElementById('username').textContent = (name || '—').toUpperCase();
 
   function logout() { localStorage.clear(); window.location.href = 'index.html'; }
   const headers = () => ({ 'Content-Type':'application/json', 'x-token': token });
@@ -154,22 +165,26 @@
       const sheets = await res.json();
       const el = document.getElementById('sheets-list');
       if (!sheets.length) { el.innerHTML = '<div class="empty">El admin aún no ha creado quinielas</div>'; return; }
+
       el.innerHTML = sheets.map(s => {
-        let badge, clickable = false;
-        if (s.hasResults && s.submitted) {
-          badge = '<span class="badge done-badge">Ver Resultados →</span>'; clickable = true;
-        } else if (s.submitted) {
-          badge = '<span class="badge done-badge">✓ Enviado</span>';
-        } else if (s.open) {
-          badge = '<span class="badge open">Llenar →</span>'; clickable = true;
-        } else {
-          badge = '<span class="badge closed">Cerrado</span>';
+        // New unfilled open sheet — gold glow
+        if (s.open && !s.submitted) {
+          return `<div class="sheet-card new-sheet" onclick="openSheet('${s.id}')">
+            <div><div class="sheet-name">⚽ ${s.name}</div><div class="sheet-meta">${s.gameCount} partidos · ¡Llena tu quiniela!</div></div>
+            <span class="badge open">NUEVO →</span>
+          </div>`;
         }
-        const cls = !clickable ? 'sheet-card done' : 'sheet-card';
-        const click = clickable ? `onclick="openSheet('${s.id}','${s.hasResults && s.submitted ? 'results' : 'fill'}')"` : '';
-        return `<div class="${cls}" ${click}>
+        // Already submitted
+        if (s.submitted) {
+          return `<div class="sheet-card done">
+            <div><div class="sheet-name">${s.name}</div><div class="sheet-meta">${s.gameCount} partidos</div></div>
+            <span class="badge done-badge">✓ Enviado</span>
+          </div>`;
+        }
+        // Closed and not submitted
+        return `<div class="sheet-card done">
           <div><div class="sheet-name">${s.name}</div><div class="sheet-meta">${s.gameCount} partidos</div></div>
-          ${badge}
+          <span class="badge closed">Cerrado</span>
         </div>`;
       }).join('');
     } catch(e) {
@@ -177,52 +192,26 @@
     }
   }
 
-  async function openSheet(id, mode) {
+  async function openSheet(id) {
     const res = await fetch(`${SERVER_URL}/sheet/${id}`, { headers: headers() });
     const sheet = await res.json();
     document.getElementById('modal-title').textContent = sheet.name;
     document.getElementById('overlay').classList.add('active');
     document.body.style.overflow = 'hidden';
 
-    if (mode === 'results') {
-      const rres = await fetch(`${SERVER_URL}/sheet/${id}/results`, { headers: headers() });
-      const rdata = await rres.json();
-      let html = rdata.breakdown.map(r => {
-        const pts = r.points;
-        const guessStr = r.guess ? `${r.guess.home}–${r.guess.away}` : '?–?';
-        const resultStr = r.result ? `${r.result.home}–${r.result.away}` : '?–?';
-        const chipClass = pts === 3 ? 'pts-3' : pts === 1 ? 'pts-1' : 'pts-0';
-        return `<div class="result-card">
-          <div class="result-teams"><span>${r.game.home}</span><span>${r.game.away}</span></div>
-          <div class="scores-row">
-            <div><div class="score-box my">${guessStr}</div><div class="score-label">Tu pronóstico</div></div>
-            <div class="pts-chip ${chipClass}">${pts} pt</div>
-            <div><div class="score-box real">${resultStr}</div><div class="score-label">Resultado</div></div>
-          </div>
-        </div>`;
-      }).join('');
-      html += `<div class="total-box"><div class="total-num">${rdata.total}</div><div class="total-label">puntos totales</div></div>`;
-      document.getElementById('modal-body').innerHTML = html;
-      return;
-    }
-
-    const myGuess = sheet.myGuess || {};
-    let html = sheet.games.map(g => {
-      const gh = myGuess[g.id]?.home ?? '';
-      const ga = myGuess[g.id]?.away ?? '';
-      return `<div class="game-row">
+    let html = sheet.games.map(g => `
+      <div class="game-row">
         <div class="teams-row">
           <span class="team">${g.home}</span>
           <span class="vs-label">VS</span>
           <span class="team">${g.away}</span>
         </div>
         <div class="score-row">
-          <input class="score-input" type="number" min="0" max="99" value="${gh}" placeholder="" inputmode="numeric" data-game="${g.id}" data-side="home">
+          <input class="score-input" type="number" min="0" max="99" value="" placeholder="" inputmode="numeric" data-game="${g.id}" data-side="home">
           <span class="score-dash">—</span>
-          <input class="score-input" type="number" min="0" max="99" value="${ga}" placeholder="" inputmode="numeric" data-game="${g.id}" data-side="away">
+          <input class="score-input" type="number" min="0" max="99" value="" placeholder="" inputmode="numeric" data-game="${g.id}" data-side="away">
         </div>
-      </div>`;
-    }).join('');
+      </div>`).join('');
     html += `<button class="submit-btn" id="submit-btn" onclick="submitGuesses('${id}')">ENVIAR PRONÓSTICOS</button>
              <div class="msg" id="modal-msg"></div>`;
     document.getElementById('modal-body').innerHTML = html;
@@ -239,7 +228,7 @@
       gameGuesses[gid][side] = parseInt(inp.value) || 0;
     });
     const msg = document.getElementById('modal-msg');
-    if (!allFilled) { msg.textContent = 'Llena todos los marcadores'; msg.className = 'msg err'; return; }
+    if (!allFilled) { msg.textContent = 'Llena todos los marcadores antes de enviar'; msg.className = 'msg err'; return; }
     document.getElementById('submit-btn').disabled = true;
     const res = await fetch(`${SERVER_URL}/sheet/${sheetId}/guess`, {
       method: 'POST', headers: headers(), body: JSON.stringify({ gameGuesses })
