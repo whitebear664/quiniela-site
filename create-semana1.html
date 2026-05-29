@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crear Primera Semana</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root { --green: #00c853; --dark: #0a0f0a; --card: #111a11; --border: #1e2e1e; --text: #e8f5e9; --muted: #5a7a5a; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--dark); color:var(--text); font-family:'Barlow',sans-serif; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px; }
+  .logo { font-family:'Bebas Neue',sans-serif; font-size:48px; color:var(--green); letter-spacing:3px; margin-bottom:8px; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:28px; width:100%; max-width:400px; margin-top:24px; }
+  label { display:block; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+  input { width:100%; background:var(--dark); border:1px solid var(--border); border-radius:8px; padding:13px 14px; color:var(--text); font-family:'Barlow',sans-serif; font-size:16px; outline:none; }
+  input:focus { border-color:var(--green); }
+  .btn { width:100%; padding:16px; background:var(--green); color:#000; border:none; border-radius:8px; font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:2px; cursor:pointer; margin-top:16px; }
+  .btn:active { opacity:0.8; }
+  .msg { text-align:center; margin-top:14px; font-size:14px; }
+  .ok { color:var(--green); } .err { color:#ff5252; }
+</style>
+</head>
+<body>
+<div class="logo">CREAR QUINIELA</div>
+<div style="color:var(--muted);font-size:13px;letter-spacing:2px">PRIMERA SEMANA · 19 PARTIDOS</div>
+
+<div class="card">
+  <label>Contraseña Admin</label>
+  <input type="password" id="pw" placeholder="••••••••">
+  <button class="btn" onclick="create()">CREAR AHORA</button>
+  <div class="msg" id="msg"></div>
+</div>
+
+<script>
+const SERVER_URL = "https://quiniela-server-production-183e.up.railway.app";
+
+const GAMES = [
+  { home: "México",         away: "Sudáfrica" },
+  { home: "Corea del Sur",  away: "Chequia" },
+  { home: "Canadá",         away: "Bosnia y Herzegovina" },
+  { home: "Estados Unidos", away: "Paraguay" },
+  { home: "Brasil",         away: "Marruecos" },
+  { home: "Haití",          away: "Escocia" },
+  { home: "Australia",      away: "Turquía" },
+  { home: "Japón",          away: "Suecia" },
+  { home: "Túnez",          away: "Países Bajos" },
+  { home: "Alemania",       away: "Costa de Marfil" },
+  { home: "España",         away: "Cabo Verde" },
+  { home: "Irán",           away: "Nueva Zelanda" },
+  { home: "Bélgica",        away: "Egipto" },
+  { home: "Francia",        away: "Senegal" },
+  { home: "Noruega",        away: "Irak" },
+  { home: "Argentina",      away: "Austria" },
+  { home: "Portugal",       away: "Uzbekistán" },
+  { home: "Inglaterra",     away: "Ghana" },
+  { home: "Colombia",       away: "Congo DR" }
+].map((g, i) => ({ ...g, id: `g_semana1_${i+1}` }));
+
+async function create() {
+  const pw = document.getElementById('pw').value;
+  const msg = document.getElementById('msg');
+  msg.textContent = ''; msg.className = 'msg';
+  if (!pw) return;
+
+  // Login
+  const loginRes = await fetch(`${SERVER_URL}/admin/login`, {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ password: pw })
+  });
+  if (!loginRes.ok) { msg.textContent = 'Contraseña incorrecta'; msg.className = 'msg err'; return; }
+  const { token } = await loginRes.json();
+
+  // Create sheet
+  msg.textContent = 'Creando...'; msg.className = 'msg';
+  const res = await fetch(`${SERVER_URL}/admin/sheet`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-token': token },
+    body: JSON.stringify({ name: 'Primera Semana', games: GAMES })
+  });
+
+  if (res.ok) {
+    msg.innerHTML = '✓ Quiniela creada correctamente!<br><br><a href="admin.html" style="color:var(--green)">Ir al panel admin →</a>';
+    msg.className = 'msg ok';
+  } else {
+    msg.textContent = 'Error al crear'; msg.className = 'msg err';
+  }
+}
+
+document.getElementById('pw').addEventListener('keydown', e => { if (e.key === 'Enter') create(); });
+</script>
+</body>
+</html>
