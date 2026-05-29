@@ -34,7 +34,19 @@
     0%, 100% { text-shadow: 0 0 10px rgba(255,213,0,0.6), 0 0 20px rgba(255,213,0,0.3); color: #ffd500; }
     50% { text-shadow: 0 0 20px #ffd500, 0 0 40px #ffd500, 0 0 80px rgba(255,213,0,0.8), 0 0 120px rgba(255,213,0,0.4); color: #fff176; }
   }
-  .pool-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+  .pool-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
+  .pl {
+    display: inline-block;
+    color: var(--muted);
+    animation: letterGlow 2.7s ease-in-out infinite;
+    animation-delay: calc(var(--i) * 0.18s);
+  }
+  @keyframes letterGlow {
+    0%, 100% { color: var(--muted); text-shadow: none; }
+    30% { color: #ffe066; text-shadow: 0 0 8px rgba(255,213,0,0.5); }
+    50% { color: #ffd500; text-shadow: 0 0 14px rgba(255,213,0,0.9), 0 0 28px rgba(255,213,0,0.4); }
+    70% { color: #ffe066; text-shadow: 0 0 8px rgba(255,213,0,0.5); }
+  }
 
   main { padding: 20px; }
   .section-title { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
@@ -131,7 +143,9 @@
   <div class="hola">HOLA <span id="username">—</span></div>
   <div class="pool-box">
     <div class="pool-amount" id="pool-amount">$—</div>
-    <div class="pool-label">El Premio</div>
+    <div class="pool-label" id="premio-label">
+      <span class="pl" style="--i:0">E</span><span class="pl" style="--i:1">L</span><span class="pl" style="--i:2"> </span><span class="pl" style="--i:3">P</span><span class="pl" style="--i:4">R</span><span class="pl" style="--i:5">E</span><span class="pl" style="--i:6">M</span><span class="pl" style="--i:7">I</span><span class="pl" style="--i:8">O</span>
+    </div>
   </div>
   <div class="logout" onclick="logout()">Salir</div>
 </header>
