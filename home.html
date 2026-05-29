@@ -29,7 +29,11 @@
   .hola span { color: var(--green); }
   .logout { font-size: 13px; color: var(--muted); cursor: pointer; padding: 8px; white-space: nowrap; }
   .pool-box { text-align: center; flex: 1; }
-  .pool-amount { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--gold); line-height: 1; }
+  .pool-amount { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--gold); line-height: 1; animation: premioGlow 2s ease-in-out infinite; }
+  @keyframes premioGlow {
+    0%, 100% { text-shadow: 0 0 8px rgba(255,213,0,0.4), 0 0 16px rgba(255,213,0,0.2); }
+    50% { text-shadow: 0 0 20px rgba(255,213,0,0.9), 0 0 40px rgba(255,213,0,0.5), 0 0 60px rgba(255,213,0,0.2); }
+  }
   .pool-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
 
   main { padding: 20px; }
