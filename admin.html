@@ -337,39 +337,71 @@
   }
 
   async function openResults(id) {
-    const res = await fetch(`${SERVER_URL}/admin/sheet/${id}/guesses`, { headers: aHeaders() });
-    const data = await res.json();
-    currentResultsSheetId = id; currentResultsSheet = data.sheet;
-    document.getElementById('results-title').textContent = data.sheet.name;
-    const existing = data.sheet.results || {};
-    document.getElementById('results-body').innerHTML = data.sheet.games.map(g => {
-      const ex = existing[g.id] || {};
-      return `<div class="result-game">
-        <div class="result-game-name"><span>${g.home}</span><span>${g.away}</span></div>
-        <div class="result-scores">
-          <input type="number" min="0" id="r_${g.id}_h" value="${ex.home ?? ''}" placeholder="0" inputmode="numeric">
-          <span>–</span>
-          <input type="number" min="0" id="r_${g.id}_a" value="${ex.away ?? ''}" placeholder="0" inputmode="numeric">
-        </div>
-      </div>`;
-    }).join('');
+    // Show modal immediately with loading state
+    currentResultsSheetId = id;
+    currentResultsSheet = null;
+    document.getElementById('results-title').textContent = 'Cargando...';
+    document.getElementById('results-body').innerHTML = '<div style="color:var(--muted);text-align:center;padding:30px">Cargando partidos...</div>';
+    document.getElementById('results-msg').textContent = '';
     document.getElementById('results-overlay').classList.add('active');
     document.body.style.overflow = 'hidden';
+
+    try {
+      // Use sheets endpoint directly — faster than guesses
+      const res = await fetch(`${SERVER_URL}/admin/sheets`, { headers: aHeaders() });
+      const sheets = await res.json();
+      const sheet = sheets.find(s => s.id === id);
+
+      // Get full sheet with games and results
+      const res2 = await fetch(`${SERVER_URL}/admin/sheet/${id}/guesses`, { headers: aHeaders() });
+      const data = await res2.json();
+      currentResultsSheet = data.sheet;
+
+      document.getElementById('results-title').textContent = data.sheet.name;
+      const existing = data.sheet.results || {};
+      document.getElementById('results-body').innerHTML = data.sheet.games.map(g => {
+        const ex = existing[g.id] || {};
+        return `<div class="result-game">
+          <div class="result-game-name"><span>${g.home}</span><span>${g.away}</span></div>
+          <div class="result-scores">
+            <input type="number" min="0" id="r_${g.id}_h" value="${ex.home ?? ''}" placeholder="0" inputmode="numeric">
+            <span>–</span>
+            <input type="number" min="0" id="r_${g.id}_a" value="${ex.away ?? ''}" placeholder="0" inputmode="numeric">
+          </div>
+        </div>`;
+      }).join('');
+    } catch(e) {
+      document.getElementById('results-body').innerHTML = '<div style="color:#ff5252;text-align:center;padding:30px">Error de conexión. Cierra e intenta de nuevo.</div>';
+    }
   }
 
   async function saveResults() {
+    if (!currentResultsSheet) return;
+    const msg = document.getElementById('results-msg');
+    msg.textContent = 'Guardando...'; msg.className = 'msg';
+
     const results = {};
     for (const g of currentResultsSheet.games) {
       const h = document.getElementById(`r_${g.id}_h`)?.value;
       const a = document.getElementById(`r_${g.id}_a`)?.value;
       if (h !== '' && a !== '') results[g.id] = { home: parseInt(h), away: parseInt(a) };
     }
-    const res = await fetch(`${SERVER_URL}/admin/sheet/${currentResultsSheetId}/results`, {
-      method:'POST', headers: aHeaders(), body: JSON.stringify({ results })
-    });
-    const msg = document.getElementById('results-msg');
-    if (res.ok) { msg.textContent = '✓ Guardado'; msg.className = 'msg ok'; loadLeaderboard(); }
-    else { msg.textContent = 'Error'; msg.className = 'msg err'; }
+
+    try {
+      const res = await fetch(`${SERVER_URL}/admin/sheet/${currentResultsSheetId}/results`, {
+        method:'POST', headers: aHeaders(), body: JSON.stringify({ results })
+      });
+      if (res.ok) {
+        msg.textContent = '✓ Guardado correctamente'; msg.className = 'msg ok';
+        // Update local sheet results so next save is correct
+        currentResultsSheet.results = results;
+        loadLeaderboard();
+      } else {
+        msg.textContent = 'Error al guardar — intenta de nuevo'; msg.className = 'msg err';
+      }
+    } catch(e) {
+      msg.textContent = 'Error de conexión — intenta de nuevo'; msg.className = 'msg err';
+    }
   }
 
   function closeResults() { document.getElementById('results-overlay').classList.remove('active'); document.body.style.overflow = ''; }
