@@ -20,13 +20,17 @@
 
   header {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 20px 20px 12px;
+    padding: 16px 20px 12px;
     position: sticky; top: 0; background: var(--dark); z-index: 10;
     border-bottom: 1px solid var(--border);
+    gap: 8px;
   }
-  .hola { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--text); letter-spacing: 2px; line-height: 1; }
+  .hola { font-family: 'Bebas Neue', sans-serif; font-size: 30px; color: var(--text); letter-spacing: 2px; line-height: 1; white-space: nowrap; }
   .hola span { color: var(--green); }
-  .logout { font-size: 13px; color: var(--muted); cursor: pointer; padding: 8px; }
+  .logout { font-size: 13px; color: var(--muted); cursor: pointer; padding: 8px; white-space: nowrap; }
+  .pool-box { text-align: center; flex: 1; }
+  .pool-amount { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--gold); line-height: 1; }
+  .pool-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
 
   main { padding: 20px; }
   .section-title { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
@@ -121,6 +125,10 @@
 
 <header>
   <div class="hola">HOLA <span id="username">—</span></div>
+  <div class="pool-box">
+    <div class="pool-amount" id="pool-amount">$—</div>
+    <div class="pool-label">El pozo</div>
+  </div>
   <div class="logout" onclick="logout()">Salir</div>
 </header>
 
@@ -248,7 +256,19 @@
     document.body.style.overflow = '';
   }
 
+  async function loadPool() {
+    try {
+      const res = await fetch(`${SERVER_URL}/admin/users`, { headers: headers() });
+      // users endpoint requires admin — use leaderboard count instead
+      const lb = await fetch(`${SERVER_URL}/standings`);
+      const players = await lb.json();
+      const total = players.length * 50;
+      document.getElementById('pool-amount').textContent = `$${total}`;
+    } catch(e) {}
+  }
+
   loadSheets();
+  loadPool();
 </script>
 </body>
 </html>
