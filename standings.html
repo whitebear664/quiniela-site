@@ -84,6 +84,20 @@
   .pts-dot.p0 { background: rgba(255,82,82,0.08); color: var(--muted); }
   .no-picks { color: var(--muted); font-size: 13px; text-align: center; padding: 10px 0; }
 
+  .pool-center { text-align: center; padding: 4px 0 0; }
+  .pool-amount-big { font-family: 'Bebas Neue', sans-serif; font-size: 42px; color: #ffd500; line-height: 1; letter-spacing: 2px; animation: premioGlow 1.5s ease-in-out infinite; }
+  @keyframes premioGlow {
+    0%, 100% { text-shadow: 0 0 10px rgba(255,213,0,0.6), 0 0 20px rgba(255,213,0,0.3); color: #ffd500; }
+    50% { text-shadow: 0 0 20px #ffd500, 0 0 40px #ffd500, 0 0 80px rgba(255,213,0,0.8); color: #fff176; }
+  }
+  .pl { display: inline-block; color: #5a7a5a; animation: letterGlow 2.7s ease-in-out infinite; animation-delay: calc(var(--i) * 0.18s); }
+  @keyframes letterGlow {
+    0%, 100% { color: #5a7a5a; text-shadow: none; }
+    30% { color: #ffe066; text-shadow: 0 0 8px rgba(255,213,0,0.5); }
+    50% { color: #ffd500; text-shadow: 0 0 14px rgba(255,213,0,0.9), 0 0 28px rgba(255,213,0,0.4); }
+    70% { color: #ffe066; text-shadow: 0 0 8px rgba(255,213,0,0.5); }
+  }
+  .pool-label-sm { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
   .loading { text-align: center; color: var(--muted); padding: 60px 0; font-size: 14px; }
   .empty { text-align: center; color: var(--muted); padding: 60px 0; font-size: 14px; }
 
@@ -100,6 +114,10 @@
 
 <header>
   <div class="logo">TABLA</div>
+  <div class="pool-center">
+    <div class="pool-amount-big" id="pool-amount">$—</div>
+    <div class="pool-label-sm"><span class="pl" style="--i:0">E</span><span class="pl" style="--i:1">L</span>&nbsp;<span class="pl" style="--i:2">P</span><span class="pl" style="--i:3">R</span><span class="pl" style="--i:4">E</span><span class="pl" style="--i:5">M</span><span class="pl" style="--i:6">I</span><span class="pl" style="--i:7">O</span></div>
+  </div>
   <a href="home.html" class="back-btn">← Volver</a>
 </header>
 
@@ -186,9 +204,18 @@
     }
   }
 
+  async function loadPool() {
+    try {
+      const res = await fetch(`${SERVER_URL}/standings`);
+      const players = await res.json();
+      document.getElementById('pool-amount').textContent = `$${players.length * 50}`;
+    } catch(e) {}
+  }
+
   load();
-  // Auto-refresh every 30 seconds
+  loadPool();
   setInterval(load, 30000);
+  setInterval(loadPool, 30000);
 </script>
 </body>
 </html>
